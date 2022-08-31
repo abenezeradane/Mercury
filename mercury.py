@@ -21,7 +21,6 @@ UP = "\x1B[1A"              # Moves the cursor up one line
 ERASE = "\x1B[2K"           # Erases the the line the cursor is on
 
 BOLD_RED = "\x1B[1;31m"     # Changes the text style to bold and the color to red
-BOLD_BLUE = "\x1B[1;34m"    # Changes the text style to bold and the color to blue
 BOLD_GREEN = "\x1B[1;32m"   # Changes the text style to bold and the color to green
 
 BLINK_RED = "\x1B[5;31m"    # Changes the text style to blinking and the color to red
@@ -40,10 +39,10 @@ class Product:
     COND: str   # Product condition
     PRICE: str  # Product price
 
-# Formatted representation of Product
-def __str__(self):
-    """ Returns a formated string containing the product's components """
-    return f"Product {self.NUM}\n\tName: {self.NAME},\n\tCondition: {self.COND},\n\tPrice: {self.PRICE}\n\tURL: {self.URL}"
+    # Formatted representation of Product
+    def __str__(self):
+        """ Returns a formated string containing the product's components """
+        return f"Product #{self.NUM}\n  Name: '{self.NAME}',\n  Condition: {self.COND},\n  Price: {self.PRICE}\n  URL: {self.URL}"
 
 
 # Downloads a given eBay product URL
@@ -62,13 +61,17 @@ def download(URL: str) -> tuple[str, str]:
     return URL, response.text
 
 
-
 # Parses the HTML string of an eBay product for wanted components
 def parse(data: tuple[str, str]) -> Product:
     """ Parses a raw HTML string and returns a 'Product' dataclass based on the components """
 
     # Create a Beautiful Soup instance
     soup = BeautifulSoup(data[1], "lxml")
+    
+    # Verify that the creation of the Beautiful Soup instance was successful
+    if not soup:
+        print(f"{BOLD_RED}Error: {WHITE}Unable to create Beautiful Soup instance from '{data[0]}'...{RESET}")
+        sys.exit()
 
     # Parse the product components
     name = soup.find("h1").get_text()[1:]                                                                           # Remove the extra space infront of the item name
@@ -84,7 +87,15 @@ def parse(data: tuple[str, str]) -> Product:
 def write(filename: str, product: Product) -> bool:
     """ Attempts to write products into a file, return true if successful """
 
-    pass
+    # Write Product data to file
+    try:
+        output = open(filename, "w+")
+        output.write("ITEM_NUMBER,NAME,CONDITION,PRICE,URL\n")
+        output.write(f"{product.NUM},{product.NAME},{product.COND},{product.PRICE},{product.URL}\n")
+        output.close()
+    except Exception:
+        print(f"{BOLD_RED}{Exception} Error: {WHITE}Unable to create/write to file '{filename}'...{RESET}")
+        sys.exit()
 
 
 # Main method of application
@@ -142,8 +153,8 @@ def main() -> None:
         try:
             file = open(args.file, "r")
             alpha = file.readlines()
-        except Exception as exception:
-            print(f"{BOLD_RED}{exception} Error: {WHITE}Unable to parse data from file '{args.file}'...{RESET}")
+        except Exception:
+            print(f"{BOLD_RED}{Exception} Error: {WHITE}Unable to parse data from file '{args.file}'...{RESET}")
             sys.exit()
 
         # Determine the number of processes to run
