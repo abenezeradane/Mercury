@@ -1,2 +1,8 @@
 # Build System
 .env/
+
+# Testing
+tests/
+
+# Output
+bin/
