@@ -69,7 +69,7 @@ def parse(data: tuple[str, str]) -> Product:
     name = soup.find("h1").get_text()[1:]                                                                           # Remove the extra space infront of the item name
     number = data[0][25:37]                                                                                         # Parse specific product number from the URL
     condition = soup.find("div", {"class": "d-item-condition-text"}).find("span", {"class": "clipped"}).get_text()  # Ignore duplicate condition text
-    price = soup.find("span", {"id": "prcIsum"}).get_text()                                                         # Find the specific span using its ID
+    price = soup.find("span", {"itemprop": "price"}).get_text()                                                     # Find the specific span using its constant attribute
     
     # Return the constructed product
     return Product(data[0], number, name, condition, price)
@@ -89,7 +89,7 @@ def write(filename: str, product: Product) -> bool:
         else:                                                                                           # If the file exists, open and append to the file
             output = open(filename, "a+")
 
-        output.write(f"{product.NUM},{product.NAME},{product.COND},{product.PRICE},{product.URL}\n")    # Write the product data
+        output.write(f"{product.NUM},{product.NAME},{product.COND},{product.PRICE},{product.URL}")    # Write the product data
         output.close()
     except Exception:
         print(f"{BLINK_RED}{Exception} Error: {WHITE}Unable to create/write to file '{filename}'...{RESET}")
