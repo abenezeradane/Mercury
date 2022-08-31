@@ -96,10 +96,10 @@ def write(filename: str, product: Product) -> bool:
     output = None
 
     try:
-        if not exists(filename):                                                                        # If the file doesn't exist, create the file and write the header
+        if not exists(filename):                                                                                                         # If the file doesn't exist, create the file and write the header
             output = open(filename, "w+")
             output.write("ITEM_NUMBER,NAME,CONDITION,PRICE,URL\n")
-        else:                                                                                           # If the file exists, open and append to the file
+        else:                                                                                                                            # If the file exists, open and append to the file
             output = open(filename, "a+")
 
         output.write(f"{clean(product.NUM)},{clean(product.NAME)},{clean(product.COND)},{clean(product.PRICE)},{clean(product.URL)}")    # Write the product data
