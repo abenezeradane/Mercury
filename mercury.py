@@ -50,7 +50,17 @@ def __str__(self):
 def download(URL: str) -> tuple[str, str]:
     """ Downloads the raw HTML of a given website and return it as a tuple along with the URL """
 
-    return URL, URL
+    # GET the product URL
+    response = requests.get(URL, headers = {'Accept-Encoding': 'identity'})
+
+    # Verify that the request was successful
+    if not response:
+        print(f"{BOLD_RED}Error: {WHITE}GET request for '{URL}' returned a status code of {response.status_code}...{RESET}")
+        sys.exit()
+
+    # Return a tuple containing the URL and HTML
+    return URL, response.text
+
 
 
 # Parses the HTML string of an eBay product for wanted components
@@ -88,7 +98,7 @@ def main() -> None:
         print(f"{BOLD_RED}Error: {WHITE}Both a URL and a filename were provided...{RESET}")
         sys.exit()
 
-    # Based on argument type (url or file), parse the product(s)
+    # Based on argument type (URL or file), parse the product(s)
     if args.url != None:
         # Verify that URL is an eBay product
         if "https://www.ebay.com/itm/" not in args.url:
@@ -113,9 +123,9 @@ def main() -> None:
             print(f"{BOLD_RED}Error: {WHITE}File '{args.file}' does not exist...{RESET}")
             sys.exit()
 
-        # Define url, tuple, and product lists
+        # Define URL, tuple, and product lists
         alpha = list()  # List to contain product URLs
-        gamma = list()  # List to contain tuples (product url and product HTML)
+        gamma = list()  # List to contain tuples (product URL and product HTML)
         omega = list()  # List to contain Products
 
         # Save product URLs in data file to list
@@ -131,11 +141,8 @@ def main() -> None:
 
         # Parse all the product URLs
         with Pool(processes = processes) as pool:
-            # Download every product HTML
-            gamma += pool.map(download, alpha)
-
-            # Parse every HTML string
-            omega += pool.map(parse, gamma)
+            gamma += pool.map(download, alpha)  # Download every product HTML
+            omega += pool.map(parse, gamma)     # Parse every HTML string
 
         # Write output to file if prompted
         if (args.output != None) and (".csv" in args.output[-4:]):
