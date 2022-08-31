@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 # Import Utility Libraries
 import re
-import sys
+from sys import exit
 from os.path import exists
 from multiprocessing import Pool
 from dataclasses import dataclass
@@ -48,7 +48,7 @@ def download(URL: str) -> tuple[str, str]:
     # Verify that the request was successful
     if not response:
         print(f"{BLINK_RED}Error: {WHITE}GET request for '{URL}' returned a status code of {response.status_code}...{RESET}")
-        sys.exit()
+        exit()
 
     # Return a tuple containing the URL and HTML
     return URL, response.text
@@ -64,7 +64,7 @@ def parse(data: tuple[str, str]) -> Product:
     # Verify that the creation of the Beautiful Soup instance was successful
     if not soup:
         print(f"{BLINK_RED}Error: {WHITE}Unable to create Beautiful Soup instance from '{data[0]}'...{RESET}")
-        sys.exit()
+        exit()
 
     # Parse the product components
     name = soup.find("h1").get_text()[1:]                                                                           # Remove the extra space infront of the item name
@@ -106,7 +106,7 @@ def write(filename: str, product: Product) -> bool:
         output.close()
     except Exception:
         print(f"{BLINK_RED}{Exception} Error: {WHITE}Unable to create/write to file '{filename}'...{RESET}")
-        sys.exit()
+        exit()
 
 
 # Main method of application
@@ -123,19 +123,19 @@ def main() -> None:
     # Verify that command line arguments were passed
     if (args.url == None) and (args.file == None):
         print(f"{BLINK_RED}Error: {WHITE}Neither a URL nor a filename was provided...{RESET}")
-        sys.exit()
+        exit()
 
     # Verify that only one command line arguments was passed
     if (args.url != None) and (args.file != None):
         print(f"{BLINK_RED}Error: {WHITE}Both a URL and a filename were provided...{RESET}")
-        sys.exit()
+        exit()
 
     # Based on argument type (URL or file), parse the product(s)
     if args.url != None:
         # Verify that URL is an eBay product
         if "https://www.ebay.com/itm/" not in args.url:
             print(f"{BLINK_RED}Error: {WHITE}URL '{args.url}' is not a valid eBay product...{RESET}")
-            sys.exit()
+            exit()
 
         # Download the product HTML
         data = download(args.url)
@@ -153,7 +153,7 @@ def main() -> None:
         # Verify that the file containing the product URLs exists
         if not exists(args.file):
             print(f"{BLINK_RED}Error: {WHITE}File '{args.file}' does not exist...{RESET}")
-            sys.exit()
+            exit()
 
         # Define URL, tuple, and product lists
         alpha = list()  # List to contain product URLs
@@ -166,7 +166,7 @@ def main() -> None:
             alpha = file.readlines()
         except Exception:
             print(f"{BLINK_RED}{Exception} Error: {WHITE}Unable to parse data from file '{args.file}'...{RESET}")
-            sys.exit()
+            exit()
 
         # Determine the number of processes to run
         processes = min(NUM_OF_CORES, len(alpha))
