@@ -8,6 +8,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # Import Utility Libraries
+import re
 import sys
 from os.path import exists
 from multiprocessing import Pool
@@ -75,6 +76,18 @@ def parse(data: tuple[str, str]) -> Product:
     return Product(data[0], number, name, condition, price)
 
 
+# Cleans the data before it is written into a CSV file
+def clean(data: str) -> str:
+    """ Uses regex to remove characters that would mess with the CSV file format """
+
+    # Clean the string
+    clean = re.sub(",", " ", data)      # Remove commas from the data string
+    clean = re.sub("\"", "\'", clean)   # Replace the quotes character with an apostrophe
+
+    # Return the cleaned string
+    return clean
+
+
 # Write the Product data into a file
 def write(filename: str, product: Product) -> bool:
     """ Attempts to write products into a file, return true if successful """
@@ -89,7 +102,7 @@ def write(filename: str, product: Product) -> bool:
         else:                                                                                           # If the file exists, open and append to the file
             output = open(filename, "a+")
 
-        output.write(f"{product.NUM},{product.NAME},{product.COND},{product.PRICE},{product.URL}")    # Write the product data
+        output.write(f"{clean(product.NUM)},{clean(product.NAME)},{clean(product.COND)},{clean(product.PRICE)},{clean(product.URL)}")    # Write the product data
         output.close()
     except Exception:
         print(f"{BLINK_RED}{Exception} Error: {WHITE}Unable to create/write to file '{filename}'...{RESET}")
