@@ -64,10 +64,20 @@ def download(URL: str) -> tuple[str, str]:
 
 
 # Parses the HTML string of an eBay product for wanted components
-def parse(product: tuple[str, str]) -> Product:
+def parse(data: tuple[str, str]) -> Product:
     """ Parses a raw HTML string and returns a 'Product' dataclass based on the components """
 
-    pass
+    # Create a Beautiful Soup instance
+    soup = BeautifulSoup(data[1], "lxml")
+
+    # Parse the product components
+    name = soup.find("h1").get_text()[1:]                                                                           # Remove the extra space infront of the item name
+    number = data[0][25:37]                                                                                         # Parse specific product number from the URL
+    condition = soup.find("div", {"class": "d-item-condition-text"}).find("span", {"class": "clipped"}).get_text()  # Ignore duplicate condition text
+    price = soup.find("span", {"id": "prcIsum"}).get_text()                                                         # Find the specific span using its ID
+    
+    # Return the constructed product
+    return Product(data[0], number, name, condition, price)
 
 
 # Write the Product data into a file
