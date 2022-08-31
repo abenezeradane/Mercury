@@ -40,6 +40,13 @@ def parse(HTML: str) -> Product:
     pass
 
 
+# Write the list of Products into a file
+def write(products: list) -> bool:
+    """ Attempts to write products into a file, return true if successful """
+
+    pass
+
+
 # Main method of application
 def main() -> None:
     """ Reads command line arguments, parses the data then calls the appropriate function """
