@@ -88,10 +88,16 @@ def write(filename: str, product: Product) -> bool:
     """ Attempts to write products into a file, return true if successful """
 
     # Write Product data to file
+    output = None
+
     try:
-        output = open(filename, "w+")
-        output.write("ITEM_NUMBER,NAME,CONDITION,PRICE,URL\n")
-        output.write(f"{product.NUM},{product.NAME},{product.COND},{product.PRICE},{product.URL}\n")
+        if not exists(filename):
+            output = open(filename, "w+")
+            output.write("ITEM_NUMBER,NAME,CONDITION,PRICE,URL\n")
+        else:
+            output = open(filename, "a+")
+
+        output.write(f"{product.NUM},{product.NAME},{product.COND},{product.PRICE},{product.URL}\n")    # Write the product
         output.close()
     except Exception:
         print(f"{BOLD_RED}{Exception} Error: {WHITE}Unable to create/write to file '{filename}'...{RESET}")
