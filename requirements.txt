@@ -1,0 +1,7 @@
+# CLI
+colorama
+
+# Web Scraping
+bs4
+lxml
+requests
