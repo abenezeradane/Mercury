@@ -49,7 +49,7 @@ $ mercury.py --url "https://www.ebay.com/itm/..." --output "output.csv"
 ### Output
 ```csv
 ITEM_NUMBER,NAME,CONDITION,PRICE,URL
-...
+...,...,...,...,...
 ```
 
 ### Dependencies
