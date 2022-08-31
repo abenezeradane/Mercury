@@ -32,7 +32,7 @@ optional arguments:
   --output OUTPUT  CSV filename where parsed data should be saved
 ```
 
-**Note:** If no URL or file is provided, the script will terminate.
+**Note:** If no URL or file is provided, the script *will* terminate.
 
 ### Example
 ```bash
