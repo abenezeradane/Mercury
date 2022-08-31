@@ -17,8 +17,8 @@ from dataclasses import dataclass
 NUM_OF_CORES = 8
 
 # Define ANSI Escape Codes
-BLINK_RED = "\x1B[5;31m"    # Changes the text style to blinking and the color to red
-WHITE = "\x1B[37m"          # Changes the text style to bold and the color to white
+BLINK_RED = "\x1B[1;31m"    # Changes the text style to bold and the color to red
+WHITE = "\x1B[37m"          # Changes the text the color to white
 RESET = "\x1B[0m"           # Resets all text styles and color
 
 
