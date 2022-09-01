@@ -18,7 +18,7 @@ from dataclasses import dataclass
 NUM_OF_CORES = 8
 
 # Define ANSI Escape Codes
-BLINK_RED = "\x1B[1;31m"    # Changes the text style to bold and the color to red
+BOLD_RED = "\x1B[1;31m"     # Changes the text style to bold and the color to red
 WHITE = "\x1B[37m"          # Changes the text the color to white
 RESET = "\x1B[0m"           # Resets all text styles and color
 
@@ -47,7 +47,7 @@ def download(URL: str) -> tuple[str, str]:
 
     # Verify that the request was successful
     if not response:
-        print(f"{BLINK_RED}Error: {WHITE}GET request for '{URL}' returned a status code of {response.status_code}...{RESET}")
+        print(f"{BOLD_RED}Error: {WHITE}GET request for '{URL}' returned a status code of {response.status_code}...{RESET}")
         exit()
 
     # Return a tuple containing the URL and HTML
@@ -63,7 +63,7 @@ def parse(data: tuple[str, str]) -> Product:
     
     # Verify that the creation of the Beautiful Soup instance was successful
     if not soup:
-        print(f"{BLINK_RED}Error: {WHITE}Unable to create Beautiful Soup instance from '{data[0]}'...{RESET}")
+        print(f"{BOLD_RED}Error: {WHITE}Unable to create Beautiful Soup instance from '{data[0]}'...{RESET}")
         exit()
 
     # Parse the product components
@@ -105,7 +105,7 @@ def write(filename: str, product: Product) -> bool:
         output.write(f"{clean(product.NUM)},{clean(product.NAME)},{clean(product.COND)},{clean(product.PRICE)},{clean(product.URL)}")    # Write the product data
         output.close()
     except Exception:
-        print(f"{BLINK_RED}{Exception} Error: {WHITE}Unable to create/write to file '{filename}'...{RESET}")
+        print(f"{BOLD_RED}{Exception} Error: {WHITE}Unable to create/write to file '{filename}'...{RESET}")
         exit()
 
 
@@ -122,19 +122,19 @@ def main() -> None:
 
     # Verify that command line arguments were passed
     if (args.url == None) and (args.file == None):
-        print(f"{BLINK_RED}Error: {WHITE}Neither a URL nor a filename was provided...{RESET}")
+        print(f"{BOLD_RED}Error: {WHITE}Neither a URL nor a filename was provided...{RESET}")
         exit()
 
     # Verify that only one command line arguments was passed
     if (args.url != None) and (args.file != None):
-        print(f"{BLINK_RED}Error: {WHITE}Both a URL and a filename were provided...{RESET}")
+        print(f"{BOLD_RED}Error: {WHITE}Both a URL and a filename were provided...{RESET}")
         exit()
 
     # Based on argument type (URL or file), parse the product(s)
     if args.url != None:
         # Verify that URL is an eBay product
         if "https://www.ebay.com/itm/" not in args.url:
-            print(f"{BLINK_RED}Error: {WHITE}URL '{args.url}' is not a valid eBay product...{RESET}")
+            print(f"{BOLD_RED}Error: {WHITE}URL '{args.url}' is not a valid eBay product...{RESET}")
             exit()
 
         # Download the product HTML
@@ -152,7 +152,7 @@ def main() -> None:
     else:
         # Verify that the file containing the product URLs exists
         if not exists(args.file):
-            print(f"{BLINK_RED}Error: {WHITE}File '{args.file}' does not exist...{RESET}")
+            print(f"{BOLD_RED}Error: {WHITE}File '{args.file}' does not exist...{RESET}")
             exit()
 
         # Define URL, tuple, and product lists
@@ -165,7 +165,7 @@ def main() -> None:
             file = open(args.file, "r")
             alpha = file.readlines()
         except Exception:
-            print(f"{BLINK_RED}{Exception} Error: {WHITE}Unable to parse data from file '{args.file}'...{RESET}")
+            print(f"{BOLD_RED}{Exception} Error: {WHITE}Unable to parse data from file '{args.file}'...{RESET}")
             exit()
 
         # Determine the number of processes to run
