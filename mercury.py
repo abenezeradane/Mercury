@@ -1,4 +1,4 @@
-# Import CLI Utility  Libraries
+# Import CLI Utility Libraries
 import argparse
 from colorama import init
 
